@@ -27,7 +27,7 @@ public class InkLikeEngine {
     public OutputBlock getOutput(long chatId) {
         String nodeKey = userStates.getOrDefault(chatId, "part1.1.Msg1");
         Node node = story.nodes.get(nodeKey);
-        if (node == null) return new OutputBlock("Сцена не знайдена.", List.of());
+        if (node == null) return new OutputBlock("Сцена не знайдена.", Collections.emptyList());
         StringBuilder sb = new StringBuilder();
         for (ContentBlock block : node.content) {
             sb.append(block.text).append("\n\n");
@@ -38,13 +38,14 @@ public class InkLikeEngine {
     public OutputBlock choose(long chatId, String choiceText) {
         String nodeKey = userStates.getOrDefault(chatId, "part1.1.Msg1");
         Node node = story.nodes.get(nodeKey);
-        if (node == null) return new OutputBlock("Сцена не знайдена.", List.of());
+        if (node == null) return new OutputBlock("Сцена не знайдена.", Collections.emptyList());
         for (Choice c : node.choices) {
             if (c.text.equalsIgnoreCase(choiceText)) {
                 userStates.put(chatId, c.next);
                 return getOutput(chatId);
             }
         }
+        List<Choice> choices = node.choices != null ? node.choices : Collections.emptyList();
         return new OutputBlock("Вибір не знайдено. Спробуйте ще раз.", node.choices);
     }
 
